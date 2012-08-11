@@ -1,0 +1,37 @@
+doctype 5
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/application.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.min.css')
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+
+  body
+    div.navbar.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          a(href='/').brand Chantor
+          ul.nav
+            li
+              a(href='/faq') FAQ
+            li  
+              a(href='/credits') Credits
+          ul.nav.pull-right
+            li
+              a(href="/logout") Logout
+    div.container
+      if flash.info != undefined
+        div.alert.alert-info
+          button(type="button", data-dismiss="alert", href="#").close ×
+          = flash.info
+      if flash.error != undefined
+        div.alert.alert-error
+          button(type="button", data-dismiss="alert", href="#").close ×
+          = flash.error
+      block content
+      hr
+      footer
+        © Trantor Inc. 2012
