@@ -19,9 +19,10 @@ html
               a(href='/faq') FAQ
             li  
               a(href='/credits') Credits
-          ul.nav.pull-right
-            li
-              a(href="/logout") Logout
+          - if (typeof(name) != 'undefined')
+            ul.nav.pull-right
+              li
+                a(href="/logout") Logout
     div.container
       if flash.info != undefined
         div.alert.alert-info

@@ -35,8 +35,7 @@ app.configure('development', function () {
 
 //Routes
 
-require('./apps/authentication/routes')(app)
-require('./apps/welcome/routes')(app)
+require('./routes')(app)
 
 //Listen
 http.createServer(app).listen(app.get('port'), function () {
