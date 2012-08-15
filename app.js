@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 require('coffee-script')
+var socket = require('socket.io');
 
 var flashify = require('flashify')
 var express = require('express')
@@ -33,11 +34,12 @@ app.configure('development', function () {
     app.use(express.errorHandler());
 });
 
-//Routes
-
-require('./routes')(app)
-
 //Listen
-http.createServer(app).listen(app.get('port'), function () {
+var server = http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
 });
+
+var io = socket.listen(server); //Attach socket io to the server
+
+//Routes
+require('./routes')(app, io) //sending both app and socket io instances to the routes

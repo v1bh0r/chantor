@@ -1,15 +1,19 @@
 extends layout
 
 block content
+  script(type='text/javascript')
+    $(document).ready(function() {
+      socket = io.connect('http://192.168.2.7:3000');
+      initChat(socket);
+    });
+
   div.row-fluid
     div.span2
       |Available:
-      ul.nav.nav-pills.nav-stacked
-        - each other in others
-          li
-            a(href='#')= other
+      ul.nav.nav-pills.nav-stacked#available-chatters
     div.span10
-      form
-        textarea(style="width:100%;height:300px; resize: none; font-size:2em", disabled="disabled")
-        textarea(style="width:100%;height:50px; resize: none; font-size:2em")
-        input(type="submit", value="send").btn.btn-primary.btn-large.pull-right
+      div.message-container.well
+        ul#messages
+      form(onsubmit="sendMessage();return false;")
+        textarea(style="width:100%;height:50px; resize: none; font-size:2em")#message
+        input(type="submit", value="send").btn.btn-primary.btn-large

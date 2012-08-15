@@ -9,7 +9,8 @@
     "express": "3.0.0rc2",
     "jade": "*",
     "coffee-script": "*",
-    "flashify": "~0.1.0"
+    "flashify": "~0.1.0",
+    "socket.io": "~0.9.10"
   },
   "devDependencies": {
     "node-dev": "~0.2.5"
