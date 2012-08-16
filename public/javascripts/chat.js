@@ -107,13 +107,15 @@ var restoreMessagesOfCurrentChatter = function () {
     var messages = localStorage[currentChatterIP];
     if (messages != undefined) {
         $('#messages').html(messages);
-        var bufferedMessages = popMessagesFromBuffer(currentChatterIP);
-        for (messageID in bufferedMessages) {
-            var bufferedMessage = bufferedMessages[messageID];
-            showNewMessage(bufferedMessage);
-        }
     } else {
         $('#messages').empty();
+    }
+
+    //Now retrieve the buffered messages
+    var bufferedMessages = popMessagesFromBuffer(currentChatterIP);
+    for (messageID in bufferedMessages) {
+        var bufferedMessage = bufferedMessages[messageID];
+        showNewMessage(bufferedMessage);
     }
 }
 

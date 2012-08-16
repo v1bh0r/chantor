@@ -3,7 +3,7 @@ extends layout
 block content
   script(type='text/javascript')
     $(document).ready(function() {
-      socket = io.connect('http://192.168.2.7:3000');
+      socket = io.connect('/');
       initChat(socket);
     });
 
