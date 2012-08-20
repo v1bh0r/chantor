@@ -1,9 +1,23 @@
 $(window).unload(function () {
-    endChat()
+    endChat();
 });
 var socket = null;
 
 var chattersCache = null;
+
+var canSendDesktopNotifications = function () {
+    return ((window.webkitNotifications != undefined) && (window.webkitNotifications.checkPermission() == 0))
+}
+
+var initDesktopNotificationsPermissions = function () {
+    if (window.webkitNotifications && window.webkitNotifications.checkPermission() == 1) { //If available
+        $("#desktop-notif-permissions").click(function () {
+            window.webkitNotifications.requestPermission();
+
+        });
+        $("#desktop-notif-permissions").show();
+    }
+}
 
 var initChat = function (newSocket) {
     socket = newSocket;
@@ -12,6 +26,10 @@ var initChat = function (newSocket) {
         if (ip == message.ip) {
             showNewMessage(message);
         } else {
+            if (canSendDesktopNotifications()) {
+                window.webkitNotifications.createNotification(
+                    'images/chat.jpg', message.ip + 'says...', message.message).show();
+            }
             addMessageToBuffer(message);
         }
 
@@ -33,10 +51,10 @@ var initChat = function (newSocket) {
 
 var showNewMessage = function (message) {
     $("#messages").append(messageHTML(message)).animate({scrollTop:$('#messages-container').height()}, 800);
-    $(document).attr('title', message.from + ': ' + message.message);
 }
 
 var endChat = function () {
+    saveCurrentMessages();
     socket.emit('end', 'end');
     socket = null;
     chattersCache = null;
@@ -99,7 +117,9 @@ function toggleActivation() {
 
 var saveCurrentMessages = function () {
     var currentChatterIP = currentSelectedChatterIP();
-    localStorage[currentChatterIP] = $('#messages').html();
+    if (currentChatterIP != undefined) {
+        localStorage[currentChatterIP] = $('#messages').html();
+    }
 }
 
 var restoreMessagesOfCurrentChatter = function () {
@@ -134,7 +154,7 @@ var addMessageToBuffer = function (message) {
         var bufferedMessages = [message]
     } else {
         bufferedMessages = JSON.parse(bufferedMessages);
-        bufferedMessages.append(message);
+        bufferedMessages.push(message);
     }
     localStorage[message.ip + 'messages'] = JSON.stringify(bufferedMessages);
 }
