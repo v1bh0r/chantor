@@ -28,7 +28,18 @@ var initChat = function (newSocket) {
         } else {
             if (canSendDesktopNotifications()) {
                 window.webkitNotifications.createNotification(
-                    'images/chat.jpg', message.ip + 'says...', message.message).show();
+                    'images/chat.jpg', message.from + ' says...', message.message).show();
+            } else {
+                $.gritter.add({
+                    // (string | mandatory) the heading of the notification
+                    title:message.from + ' says...',
+                    // (string | mandatory) the text inside the notification
+                    text:message.message,
+                    // (string | optional) the image to display on the left
+                    image:'images/chat.jpg',
+                    // (bool | optional) if you want it to fade out on its own or just sit there
+                    sticky:true
+                });
             }
             addMessageToBuffer(message);
         }
@@ -51,6 +62,7 @@ var initChat = function (newSocket) {
 
 var showNewMessage = function (message) {
     $("#messages").append(messageHTML(message)).animate({scrollTop:$('#messages-container').height()}, 800);
+    scrollMessagesDown();
 }
 
 var endChat = function () {
@@ -112,7 +124,12 @@ function toggleActivation() {
         $(this).addClass('active').siblings().removeClass('active');
         restoreMessagesOfCurrentChatter();
         $('#message').focus();
+        scrollMessagesDown();
     }
+}
+
+var scrollMessagesDown = function(){
+    $('.message-container').scrollTop($('.message-container')[0].scrollHeight);
 }
 
 var saveCurrentMessages = function () {
