@@ -65,7 +65,6 @@ routes = (app, io) ->
       req.flash 'error', "Enter a valid name"
       res.redirect '/'
     else
-      req.flash 'info', "Welcome #{user}"
       res.redirect '/'
 
   app.get '/logout', (req, res) ->
