@@ -17,12 +17,13 @@ var initDesktopNotificationsPermissions = function () {
         });
         $("#desktop-notif-permissions").show();
     }
+
 }
 
 var initChat = function (newSocket) {
     socket = newSocket;
     socket.on('message', function (message) {
-        ip = currentSelectedChatterIP();
+        var ip = currentSelectedChatterIP();
         if (ip == message.ip) {
             showNewMessage(message);
         } else {
@@ -58,6 +59,15 @@ var initChat = function (newSocket) {
     socket.on('chatterLeft', function (chatter) {
         chatterLeft(chatter);
     })
+
+    $('#available-chatters').parent().popover({
+        content:'Fellow chatters would appear online here as and when they login.<br/><strong>Click on one to start chatting...</strong>',
+        placement:'bottom'
+    });
+    $('#available-chatters').parent().popover('show');
+    setTimeout(function () {
+        $('#available-chatters').parent().popover('hide');
+    }, 10000);
 }
 
 var showNewMessage = function (message) {
@@ -82,6 +92,8 @@ var sendMessage = function () {
                 message:message});
             $('#message').val('');
             showNewMessage({ip:null, from:'You', message:message});
+        } else {
+            alert('Select a recipient from the left.');
         }
     }
     $('#message').focus();
@@ -104,7 +116,7 @@ var initAvailableChatters = function (chatters) {
 
 var addNewChatter = function (chatter) {
     if (chattersCache[chatter.ip] == undefined) {
-        var html = '<li ip="' + chatter.ip + '"><a href="#">' + chatter.name + '</a></li>';
+        var html = '<li ip="' + chatter.ip + '"><a href="#"><i class="icon-user"></i>&nbsp;' + chatter.name + '<i class="icon-chevron-right pull-right"></i></a></li>';
         var ele = $('#available-chatters').append(html);
         ele.children().last().click(toggleActivation);
         chattersCache[chatter.ip] = chatter.name;
@@ -128,7 +140,7 @@ function toggleActivation() {
     }
 }
 
-var scrollMessagesDown = function(){
+var scrollMessagesDown = function () {
     $('.message-container').scrollTop($('.message-container')[0].scrollHeight);
 }
 

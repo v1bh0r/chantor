@@ -9,10 +9,11 @@ block content
     });
 
   div.row-fluid
-    div.span2
-      |Available:
-      ul.nav.nav-pills.nav-stacked#available-chatters
-    div.span10
+    div.span3
+      div.well
+        h4 Online chatters:
+        ul.nav.nav-pills.nav-stacked#available-chatters
+    div.span9
       div.message-container.well
         ul#messages
       form(onsubmit="sendMessage();return false;")
