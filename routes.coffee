@@ -3,7 +3,6 @@ users = {}
 sockets = {}
 
 availableChatters = (myIP) ->
-  console.log 'Populating available chatters'
   chatters = []
   for othersIP, socket of sockets
     if othersIP isnt myIP
@@ -13,11 +12,9 @@ availableChatters = (myIP) ->
           name: othersName
           ip: othersIP
         )
-  console.log JSON.stringify(chatters)
   return chatters
 
 sayHello = (myIP) ->
-  console.log 'Say Hello'
   for othersIP, socket of sockets
     if othersIP isnt myIP
       othersName = users[myIP]
@@ -28,7 +25,6 @@ sayHello = (myIP) ->
         )
 
 sayBye = (myIP) ->
-  console.log 'Say Bye'
   for othersIP, socket of sockets
     if othersIP isnt myIP
       sockets[othersIP].emit('chatterLeft',
@@ -78,20 +74,17 @@ routes = (app, io) ->
   io.sockets.on('connection', (socket) ->
     ip = socket.handshake.address.address
     sockets[ip] = socket
-    console.log("connnect")
 
     socket.emit('initAvailableChatters', availableChatters(ip))
     sayHello(ip)
 
     socket.on('message', (data) ->
-      console.log JSON.stringify(data)
       sockets[data['to']].emit('message', {ip: ip, from: users[ip], message: data.message})
     )
 
     socket.on('end', (data) ->
       sayBye ip
       delete sockets[ip]
-      console.log "#{ip} left chat"
     )
   )
 

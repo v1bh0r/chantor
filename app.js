@@ -39,7 +39,7 @@ var server = http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
 });
 
-var io = socket.listen(server); //Attach socket io to the server
+var io = socket.listen(server, { log: false }); //Attach socket io to the server
 
 //Routes
 require('./routes')(app, io) //sending both app and socket io instances to the routes
