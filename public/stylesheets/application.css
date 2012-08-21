@@ -16,3 +16,17 @@ body {
     color: green;
     font-size: 1.5em;
 }
+
+#available-chatters i {
+    opacity: .25;
+}
+
+#available-chatters a:hover i {
+    opacity: .5;
+}
+
+#available-chatters .active i,
+#available-chatters .active a:hover i {
+    background-image: url(./img/glyphicons-halflings-white.png);
+    opacity: 1;
+}
