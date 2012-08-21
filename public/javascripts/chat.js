@@ -68,6 +68,10 @@ var initChat = function (newSocket) {
     setTimeout(function () {
         $('#available-chatters').parent().popover('hide');
     }, 10000);
+
+    $('#clear-chat').click(function() {
+        $('#messages').empty();
+    });
 }
 
 var showNewMessage = function (message) {
