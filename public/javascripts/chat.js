@@ -244,8 +244,19 @@ var popup = function (message) {
 
     //Show popup
     if (canSendDesktopNotifications()) {
-        window.webkitNotifications.createNotification(
-            'images/chat.jpg', message.from + ' says...', message.message).show();
+        var notice = window.webkitNotifications.createNotification(
+            'images/chat.jpg', message.from + ' says...', message.message);
+
+        //It should bring back the focus on click
+        notice.onclick = function(params) { window.focus(); this.cancel(); };
+
+        //set timeout to hide it
+        setTimeout(function(){
+            notice.cancel();
+        }, '5000');
+
+        // Show the popup
+        notice.show();
     } else {
         $.gritter.add({
             // (string | mandatory) the heading of the notification
