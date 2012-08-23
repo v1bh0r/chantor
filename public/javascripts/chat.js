@@ -113,8 +113,13 @@ var initAvailableChatters = function (chatters) {
 }
 
 var addNewChatter = function (chatter) {
-    if (chattersCache[chatter.ip] == undefined) {
-        var html = '<li ip="' + chatter.ip + '"><a href="#"><i class="icon-envelope" style="display: none;"></i><i class="icon-user"></i>&nbsp;' + chatter.name + '<i class="icon-chevron-right pull-right"></i></a></li>';
+    if (chatter.ip != undefined && chattersCache[chatter.ip] == undefined) {
+        var hasntBufferedMessages = getBufferedMessages(chatter.ip) == undefined;
+        var style = "";
+        if (hasntBufferedMessages) {
+            style = "display: none;";
+        }
+        var html = '<li ip="' + chatter.ip + '"><a href="#"><i class="icon-envelope" style="' + style + '"></i><i class="icon-user"></i>&nbsp;' + chatter.name + '<i class="icon-chevron-right pull-right"></i></a></li>';
         var ele = $('#available-chatters').append(html);
         ele.children().last().click(toggleActivation);
         chattersCache[chatter.ip] = chatter.name;
@@ -186,13 +191,17 @@ var addMessageToBuffer = function (message) {
 }
 
 var popMessagesFromBuffer = function (ip) {
-    var bufferedMessages = localStorage[ip + 'messages'];
-    delete localStorage[ip + 'messages'];
+    var bufferedMessages = getBufferedMessages(ip);
     if (bufferedMessages == undefined) {
         return [];
     } else {
+        delete localStorage[ip + 'messages'];
         return JSON.parse(bufferedMessages);
     }
+}
+
+var getBufferedMessages = function (ip) {
+    return localStorage[ip + 'messages'];
 }
 
 //Utils
