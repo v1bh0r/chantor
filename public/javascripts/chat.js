@@ -30,10 +30,15 @@ var initChat = function (newSocket) {
             }
             showNewMessage(message);
         } else {
-            popup(message);
+            //Save the message to local storage
             addMessageToBuffer(message);
-        }
 
+            //Show an envelope icon next to the chatter.
+            $("li[ip='" + message.ip + "'] .icon-envelope").show();
+
+            //Show popup and make a sound
+            popup(message);
+        }
     });
 
     socket.on('initAvailableChatters', function (chatters) {
@@ -109,7 +114,7 @@ var initAvailableChatters = function (chatters) {
 
 var addNewChatter = function (chatter) {
     if (chattersCache[chatter.ip] == undefined) {
-        var html = '<li ip="' + chatter.ip + '"><a href="#"><i class="icon-user"></i>&nbsp;' + chatter.name + '<i class="icon-chevron-right pull-right"></i></a></li>';
+        var html = '<li ip="' + chatter.ip + '"><a href="#"><i class="icon-envelope" style="display: none;"></i><i class="icon-user"></i>&nbsp;' + chatter.name + '<i class="icon-chevron-right pull-right"></i></a></li>';
         var ele = $('#available-chatters').append(html);
         ele.children().last().click(toggleActivation);
         chattersCache[chatter.ip] = chatter.name;
@@ -122,15 +127,14 @@ var chatterLeft = function (chatter) {
 }
 
 function toggleActivation() {
-    if ($(this).hasClass('active')) {
-        //$(this).removeClass('active');
-    } else {
+    if (!$(this).hasClass('active')) {
         saveCurrentMessages();
         $(this).addClass('active').siblings().removeClass('active');
         restoreMessagesOfCurrentChatter();
         $('#message').focus();
         scrollMessagesDown();
     }
+    $("li[ip='" + $(this).attr('ip') + "'] .icon-envelope").hide();
 }
 
 var scrollMessagesDown = function () {
@@ -202,6 +206,10 @@ function clone(obj) {
 }
 
 var popup = function (message) {
+    //Play Sound
+    $('#message-sound').get(0).play();
+
+    //Show popup
     if (canSendDesktopNotifications()) {
         window.webkitNotifications.createNotification(
             'images/chat.jpg', message.from + ' says...', message.message).show();
