@@ -23,6 +23,7 @@ var initDesktopNotificationsPermissions = function () {
 var initChat = function (newSocket) {
     socket = newSocket;
     socket.on('message', function (message) {
+        message.timestamp = timeStamp();
         var ip = currentSelectedChatterIP();
         if (ip == message.ip) {
             if (Visibility.hidden()) {
@@ -89,7 +90,7 @@ var sendMessage = function () {
                 to:toIP,
                 message:message});
             $('#message').val('');
-            showNewMessage({ip:null, from:'You', message:message});
+            showNewMessage({ip:null, from:'You', message:message, timestamp: timeStamp()});
         } else {
             alert('Select a recipient from the left.');
         }
@@ -102,7 +103,7 @@ var messageHTML = function (message) {
     if (message.ip) {
         displayName += ' - ' + message.ip;
     }
-    return '<li><span class="label label-info">' + displayName + '</span> <span class="message">' + message.message.replace(/\n|\r\n/g, '<br/>');
+    return '<li><span class="label label-info">' + displayName + '</span>&nbsp;<span class="label label-success">' + message.timestamp + '</span> <span class="message">' + message.message.replace(/\n|\r\n/g, '<br/>');
     +'</span></li>'
 }
 
@@ -234,4 +235,11 @@ var popup = function (message) {
             sticky:true
         });
     }
+}
+
+var timeStamp = function () {
+    var dateTime, timestamp;
+    dateTime = new Date();
+    timestamp = "" + (dateTime.getDate()) + "/" + (dateTime.getMonth()) + "/" + (dateTime.getFullYear()) + " " + (dateTime.getHours()) + ":" + (dateTime.getMinutes());
+    return timestamp;
 }
