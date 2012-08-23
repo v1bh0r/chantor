@@ -25,23 +25,12 @@ var initChat = function (newSocket) {
     socket.on('message', function (message) {
         var ip = currentSelectedChatterIP();
         if (ip == message.ip) {
+            if (Visibility.hidden()) {
+                popup(message);
+            }
             showNewMessage(message);
         } else {
-            if (canSendDesktopNotifications()) {
-                window.webkitNotifications.createNotification(
-                    'images/chat.jpg', message.from + ' says...', message.message).show();
-            } else {
-                $.gritter.add({
-                    // (string | mandatory) the heading of the notification
-                    title:message.from + ' says...',
-                    // (string | mandatory) the text inside the notification
-                    text:message.message,
-                    // (string | optional) the image to display on the left
-                    image:'images/chat.jpg',
-                    // (bool | optional) if you want it to fade out on its own or just sit there
-                    sticky:true
-                });
-            }
+            popup(message);
             addMessageToBuffer(message);
         }
 
@@ -69,7 +58,7 @@ var initChat = function (newSocket) {
         $('#available-chatters').parent().popover('hide');
     }, 10000);
 
-    $('#clear-chat').click(function() {
+    $('#clear-chat').click(function () {
         $('#messages').empty();
     });
 }
@@ -210,4 +199,22 @@ function clone(obj) {
         if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
     }
     return copy;
+}
+
+var popup = function (message) {
+    if (canSendDesktopNotifications()) {
+        window.webkitNotifications.createNotification(
+            'images/chat.jpg', message.from + ' says...', message.message).show();
+    } else {
+        $.gritter.add({
+            // (string | mandatory) the heading of the notification
+            title:message.from + ' says...',
+            // (string | mandatory) the text inside the notification
+            text:message.message,
+            // (string | optional) the image to display on the left
+            image:'images/chat.jpg',
+            // (bool | optional) if you want it to fade out on its own or just sit there
+            sticky:true
+        });
+    }
 }
