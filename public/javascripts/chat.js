@@ -67,6 +67,29 @@ var initChat = function (newSocket) {
     $('#clear-chat').click(function () {
         $('#messages').empty();
     });
+
+    if (isMessagesDownloadSupported()) {
+        $('#download-chat').click(function () {
+            var messages = messagesToText();
+            var data = new Blob([messages]);
+            if (window.webkitURL != undefined) {
+                window.open(window.webkitURL.createObjectURL(data), 'Chat.txt');
+            } else if (window.URL != undefined) {
+                window.open(window.URL.createObjectURL(data), 'Chat.txt');
+            }
+        });
+    } else {
+        $('#download-chat').hide();
+    }
+
+
+}
+
+var isMessagesDownloadSupported = function () {
+    if (window.webkitURL != undefined || window.URL != undefined) {
+        return true;
+    }
+    return false;
 }
 
 var showNewMessage = function (message) {
@@ -90,7 +113,7 @@ var sendMessage = function () {
                 to:toIP,
                 message:message});
             $('#message').val('');
-            showNewMessage({ip:null, from:'You', message:message, timestamp: timeStamp()});
+            showNewMessage({ip:null, from:'You', message:message, timestamp:timeStamp()});
         } else {
             alert('Select a recipient from the left.');
         }
@@ -242,4 +265,17 @@ var timeStamp = function () {
     dateTime = new Date();
     timestamp = "" + (dateTime.getDate()) + "/" + (dateTime.getMonth()) + "/" + (dateTime.getFullYear()) + " " + (dateTime.getHours()) + ":" + (dateTime.getMinutes());
     return timestamp;
+}
+
+var messagesToText = function () {
+    var returnText = "";
+    var messages = $('#messages li')
+    $.each(messages, function (index, value) {
+        var who, when, what;
+        who = $($(value).children()[0]).html();
+        when = $($(value).children()[1]).html();
+        what = $($(value).children()[2]).html();
+        returnText += who + " (" + when + ") : " + what + "\r\n";
+    });
+    return returnText;
 }
